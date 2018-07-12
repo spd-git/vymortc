@@ -3,15 +3,15 @@ var router = express.Router();
 var path = require('path');
 var _ = require('lodash');
 
-var apiKey = process.env.TOKBOX_API_KEY;
-var secret = process.env.TOKBOX_SECRET;
+var apiKey = '46152622';
+var secret = '6e6b180276649ee991d6ebe477243f7dc72a32c2';
 
 if (!apiKey || !secret) {
   console.error('=========================================================================================================');
   console.error('');
   console.error('Missing TOKBOX_API_KEY or TOKBOX_SECRET');
   console.error('Find the appropriate values for these by logging into your TokBox Dashboard at: https://tokbox.com/account/#/');
-  console.error('Then add them to ', path.resolve('.env'), 'or as environment variables' );
+  console.error('Then add them to ', path.resolve('.env'), 'or as environment variables');
   console.error('');
   console.error('=========================================================================================================');
   process.exit();
