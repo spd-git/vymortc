@@ -108,6 +108,7 @@ if (!('webkitSpeechRecognition' in window)) {
             }
         }
         final_transcript = capitalize(final_transcript);
+        sendData(final_transcript);
         final_span.innerHTML = linebreak(final_transcript);
         interim_span.innerHTML = linebreak(interim_transcript);
         if (final_transcript || interim_transcript) {

@@ -10,6 +10,7 @@ var apiKey = "46152622";
 var sessionId = "1_MX40NjE1MjYyMn5-MTUzMTQwNTg4OTkyMn5JTXdKY2dlWSt4bldmbEFBNzRnUDU1cDR-fg";
 var token = "T1==cGFydG5lcl9pZD00NjE1MjYyMiZzaWc9YTA1OWNiOTE0MWNhNmYzNTI4NTI3N2UwMTU0ZmNhODkzZWMyNTU0NzpzZXNzaW9uX2lkPTFfTVg0ME5qRTFNall5TW41LU1UVXpNVFF3TlRnNE9Ua3lNbjVKVFhkS1kyZGxXU3Q0YmxkbWJFRkJOelJuVURVMWNEUi1mZyZjcmVhdGVfdGltZT0xNTMxNDA1OTU2Jm5vbmNlPTAuMTI3NDIyOTc0MDQ1NTAyMTgmcm9sZT1wdWJsaXNoZXImZXhwaXJlX3RpbWU9MTUzMTQ5MjM1NiZpbml0aWFsX2xheW91dF9jbGFzc19saXN0PQ==";
 
+var session;
 
 function handleError(error) {
     if (error) {
@@ -18,7 +19,7 @@ function handleError(error) {
 }
 
 function initializeSession() {
-    var session = OT.initSession(apiKey, sessionId);
+    session = OT.initSession(apiKey, sessionId);
 
     // Subscribe to a newly created stream
     session.on('streamCreated', function streamCreated(event) {
@@ -51,6 +52,16 @@ function initializeSession() {
             session.publish(publisher, handleError);
         }
     });
+
+    session.on('signal:msg', function(event) {
+        // var msg = document.createElement('p');
+        // msg.innerText = event.data;
+        // msg.className = event.from.connectionId === session.connection.connectionId ? 'mine' : 'theirs';
+        // msgHistory.appendChild(msg);
+        // msg.scrollIntoView();
+
+        final_span.innerHTML = linebreak(event.data);
+    });
 }
 
 // See the config.js file.
@@ -68,4 +79,17 @@ if (SERVER_BASE_URL) {
         handleError(error);
         alert('Failed to get opentok sessionId and token. Make sure you have updated the config.js file.');
     });
+}
+
+function sendData(msgTxt){
+    if (session != null) {
+        session.signal({
+            type: 'msg',
+            data: msgTxt
+        }, function (error) {
+            if (error) {
+                console.log('Error sending signal:', error.name, error.message);
+            }
+        });
+    }
 }
