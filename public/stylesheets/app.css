@@ -19,11 +19,72 @@ body, html {
 }
 #publisher {
     position: absolute;
-    width: 360px;
-    height: 240px;
-    bottom: 10px;
-    left: 10px;
+    width: 25%;
+    height: 25%;
+    bottom: 20px;
+    left: 20px;
     z-index: 100;
-    border: 3px solid white;
+    border: 1px solid gray;
     border-radius: 3px;
+    transition: opacity 1s;
+}
+
+
+
+#info {
+    font-size: 20px;
+}
+#div_start {
+    float: right;
+}
+#headline {
+    text-decoration: none
+}
+#results {
+    position: absolute;
+    width: 30%;
+    height: 5%;
+    bottom: 90px;
+    left: 325px;
+    font-size: 14px;
+    background-color: white;
+    font-weight: bold;
+    border: 1px solid gray;
+    padding: 10px;
+    text-align: left;
+    min-height: 90px;
+    border-radius: 3px;
+}
+#start_button {
+    border: 0;
+    background-color:transparent;
+    padding: 0;
+}
+.interim {
+    color: gray;
+}
+.final {
+    color: black;
+    padding-right: 3px;
+}
+.button {
+    display: none;
+}
+.marquee {
+    margin: 20px auto;
+}
+
+#buttons {
+    margin: 10px 0;
+    position: relative;
+    top: -50px;
+}
+
+#copy {
+    margin-top: 20px;
+}
+
+#copy > div {
+    display: none;
+    margin: 0 70px;
 }
