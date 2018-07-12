@@ -33,7 +33,11 @@ function findRoomFromSessionId(sessionId) {
 }
 
 router.get('/', function (req, res) {
-  res.render('index', { title: 'Learning-OpenTok-Node' });
+  res.render('index', { title: 'Vymo RTC' });
+});
+
+router.get('/help', function (req, res) {
+  res.render('help', { title: 'OpenTok-Help' });
 });
 
 /**
