@@ -108,7 +108,7 @@ if (!('webkitSpeechRecognition' in window)) {
             }
         }
         final_transcript = capitalize(final_transcript);
-        sendData(final_transcript);
+        sendData(final_transcript+"####"+interim_transcript);
         final_span.innerHTML = linebreak(final_transcript);
         interim_span.innerHTML = linebreak(interim_transcript);
         if (final_transcript || interim_transcript) {
@@ -150,8 +150,8 @@ function copyButton() {
         recognizing = false;
         recognition.stop();
     }
-    copy_button.style.display = 'none';
-    copy_info.style.display = 'inline-block';
+    // copy_button.style.display = 'none';
+    // copy_info.style.display = 'inline-block';
     showInfo('');
 }
 
@@ -179,7 +179,7 @@ function startButton(event) {
     // ignore_onend = false;
     final_span.innerHTML = final_span.innerHTML + ' ';
     interim_span.innerHTML = '';
-    start_img.src = '/images/mic-slash.gif';
+    start_img.src = '/images/mic.gif';
     showInfo('info_allow');
     showButtons('none');
     start_timestamp = event.timeStamp;
@@ -204,8 +204,8 @@ function showButtons(style) {
         return;
     }
     current_style = style;
-    copy_button.style.display = style;
-    email_button.style.display = style;
-    copy_info.style.display = 'none';
-    email_info.style.display = 'none';
+    // copy_button.style.display = style;
+    // email_button.style.display = style;
+    // copy_info.style.display = 'none';
+    // email_info.style.display = 'none';
 }

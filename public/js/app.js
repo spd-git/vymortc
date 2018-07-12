@@ -59,8 +59,12 @@ function initializeSession() {
         // msg.className = event.from.connectionId === session.connection.connectionId ? 'mine' : 'theirs';
         // msgHistory.appendChild(msg);
         // msg.scrollIntoView();
-
-        final_span.innerHTML = linebreak(event.data);
+        if (event.from.connectionId !== session.connection.connectionId) {
+            var textArr = event.data.toString().split("####");
+            final_span_other.innerHTML = linebreak(textArr[0]);
+            if (textArr.length > 1)
+                interim_span_other.innerHTML = linebreak(textArr[1]);
+        }
     });
 }
 

@@ -55,6 +55,21 @@ body, html {
     border-radius: 3px;
     z-index: 200;
 }
+#results_other {
+    position: absolute;
+    width: 290px;
+    height: 90px;
+    bottom: 90px;
+    left: 640px;
+    font-size: 14px;
+    background-color: white;
+    font-weight: bold;
+    border: 1px solid gray;
+    padding: 10px;
+    text-align: left;
+    border-radius: 3px;
+    z-index: 200;
+}
 #start_button {
     border: 0;
     background-color:transparent;
