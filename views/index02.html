@@ -39,6 +39,8 @@
 <div onmousedown="redraw(event);" onmouseup="redraw(event);" id="prediction_chart" class="insightsLeft" style="top:10px;"></div>
 <div onmousedown="redraw(event);" onmouseup="redraw(event);" id="sentiment_chart" class="insightsLeft" style="top:155px;"></div>
 <div onmousedown="redraw(event);" onmouseup="redraw(event);" id="barchart_material" class="insightsLeft" style="top:300px;"></div>
+<div id="all_fine"><p>"Vymo k according all is Well"</p></div>
+<div onmousedown="redraw(event);" onmouseup="redraw(event); "id="suggested_words" class="insightsLeft" style="top:700px;"></div>
 <div onmousedown="redraw(event);" onmouseup="redraw(event);" id="personality" class="insights" style="top:10px;"></div>
 <div id="personality_detail_container">
   <div onmousedown="redraw(event);" onmouseup="redraw(event);" id="quality1" class="insights" style="top:121px;"></div>
@@ -56,6 +58,7 @@
 <script type="text/javascript" src="js/voicetranslation.js"></script>
 <script type="text/javascript" src="js/lineChart.js"></script>
 <script type="text/javascript" src="js/barChart.js"></script>
+<script type="text/javascript" src="js/bubbleChart.js"></script>
 <script type="text/javascript">
 
   var graphData;
@@ -63,9 +66,24 @@
     drawChart(String(myTimeLine) + 's', graphData);
   }
   var GetDummyDataFromText = function () {
-    $.ajax({
+    var postReqData = $('#final_span').text() + $('#final_span_other').text()
+    var postReqDataString;
+    if(postReqData){
+      postReqDataString = JSON.stringify({"text":postReqData})
+    }
+    /*$.ajax({
       url: "https://ritiksparser.herokuapp.com/getdummuystats",
-      type: "POST"
+      type: "POST"})*/
+
+    $.ajax({
+      "url": "http://ritiksparser.herokuapp.com/predict",
+      type: "POST",
+      async: false,
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "processData": false,
+      "data": postReqDataString
     })
             .done(function (data) {
               console.log("Sentiment score is " + JSON.stringify(data.predict));
@@ -79,9 +97,9 @@
             });
   }
 
-
-//  GetDummyDataFromText();
-  var interval = 1000 * 7; // where X is your every X seconds
+  var lastNegativeValue = 1;
+  var displaySuggestions = false;
+  var interval = 1000 * 10; // where X is your every X seconds
   setInterval(GetDummyDataFromText, interval);
 
   function drawChart(timeline, result) {
@@ -92,6 +110,7 @@
     var currentSentiment = []
     var KNN, Logistic
     var positive, negative, neutral
+    var words_suggestionStats = []
     if (result) {
       var predict = result.predict
       if (predict) {
@@ -109,6 +128,17 @@
         positive = parseFloat(sentiment.positive)
         neutral = parseFloat(sentiment.neutral)
         negative = parseFloat(sentiment.negative)
+        if(lastNegativeValue<negative){
+          displaySuggestions = true
+          var suggested_words = result.suggestions
+          //suggested_words = [{"label":"ahh","score":30}]
+          if(suggested_words){
+            suggested_words = suggested_words.slice(0,10)
+            words_suggestionStats = [['Word','Score']]
+            words_suggestionStats = words_suggestionStats.concat(suggested_words.map(x=>[x.label,x.score]))
+          }
+        }
+        lastNegativeValue = negative
       }
       var wordCount = result.word_freq
       var wordStat = []
@@ -228,6 +258,15 @@
     if(values_stat){
       drawBarChart(personalityChart.concat(values_stat), 'Values Analysis',
               'Values Analysis', '', 'values')
+    }
+
+    if(displaySuggestions){
+      $("div#suggested_words").show();
+      drawBarChart(words_suggestionStats,'These words can lead to Positive Outcomes','These words can lead to Positivity','Score','suggested_words')
+      $("div#all_fine").hide();
+    }else{
+      $("div#suggested_words").hide();
+      $("div#all_fine").show();
     }
   }
 
