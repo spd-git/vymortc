@@ -128,9 +128,9 @@
         positive = parseFloat(sentiment.positive)
         neutral = parseFloat(sentiment.neutral)
         negative = parseFloat(sentiment.negative)
-        if(lastNegativeValue<negative){
+        if(lastNegativeValue<negative || true){
           displaySuggestions = true
-          var suggested_words = result.suggestions
+          var suggested_words = result.suggestion
           //suggested_words = [{"label":"ahh","score":30}]
           if(suggested_words){
             suggested_words = suggested_words.slice(0,10)
