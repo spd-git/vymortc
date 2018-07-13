@@ -4,7 +4,7 @@
   <link href="/stylesheets/app.css" rel="stylesheet" type="text/css">
   <script src="https://static.opentok.com/v2/js/opentok.min.js"></script>
 </head>
-<body>
+<body onmouseup="redraw(event);">
 
 <div id="videos">
   <div id="subscriber"></div>
@@ -36,8 +36,206 @@
     </select>
   </div>
 </div>
+<div onmousedown="redraw(event);" onmouseup="redraw(event);" id="prediction_chart" class="insightsLeft" style="top:10px;"></div>
+<div onmousedown="redraw(event);" onmouseup="redraw(event);" id="sentiment_chart" class="insightsLeft" style="top:155px;"></div>
+<div onmousedown="redraw(event);" onmouseup="redraw(event);" id="barchart_material" class="insightsLeft" style="top:300px;"></div>
+<div onmousedown="redraw(event);" onmouseup="redraw(event);" id="personality" class="insights" style="top:10px;"></div>
+<div id="personality_detail_container">
+  <div onmousedown="redraw(event);" onmouseup="redraw(event);" id="quality1" class="insights" style="top:121px;"></div>
+  <div onmousedown="redraw(event);" onmouseup="redraw(event);" id="quality2" class="insights" style="top:232px;"></div>
+  <div onmousedown="redraw(event);" onmouseup="redraw(event);" id="quality3" class="insights" style="top:343px;"></div>
+  <div onmousedown="redraw(event);" onmouseup="redraw(event);" id="quality4" class="insights" style="top:454px;"></div>
+  <div onmousedown="redraw(event);" onmouseup="redraw(event);" id="quality5" class="insights" style="top:565px;"></div>
+</div>
+<div onmousedown="redraw(event);" onmouseup="redraw(event);" id="needs" class="insights" style="top:676px;"  ></div>
+<div onmousedown="redraw(event);" onmouseup="redraw(event);" id="values" class="insights" style="top:787px;" ></div>
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
 <script type="text/javascript" src="js/app.js"></script>
 <script type="text/javascript" src="js/voicetranslation.js"></script>
+<script type="text/javascript" src="js/lineChart.js"></script>
+<script type="text/javascript" src="js/barChart.js"></script>
+<script type="text/javascript">
+
+  var graphData;
+  function redraw(){
+    drawChart(String(myTimeLine) + 's', graphData);
+  }
+  var GetDummyDataFromText = function () {
+    $.ajax({
+      url: "https://ritiksparser.herokuapp.com/getdummuystats",
+      type: "POST"
+    })
+            .done(function (data) {
+              console.log("Sentiment score is " + JSON.stringify(data.predict));
+              // $("#interim_result").text(data.documents[0].score);
+              graphData = data;
+              drawChart(String(myTimeLine) + 's', data)
+              myTimeLine += 5;
+            })
+            .fail(function () {
+              console.log("error");
+            });
+  }
+
+
+//  GetDummyDataFromText();
+  var interval = 1000 * 7; // where X is your every X seconds
+  setInterval(GetDummyDataFromText, interval);
+
+  function drawChart(timeline, result) {
+    if (!timeline) {
+      return
+    }
+    var currentPrediction = []
+    var currentSentiment = []
+    var KNN, Logistic
+    var positive, negative, neutral
+    if (result) {
+      var predict = result.predict
+      if (predict) {
+        var o = predict.find(x => x.label === 'KNN')
+        if (o) {
+          KNN = parseFloat(o.value)
+        }
+        o = predict.find(x => x.label === 'Logistic Regression')
+        if (o) {
+          Logistic = parseFloat(o.value)
+        }
+      }
+      var sentiment = result.sentiment
+      if (sentiment) {
+        positive = parseFloat(sentiment.positive)
+        neutral = parseFloat(sentiment.neutral)
+        negative = parseFloat(sentiment.negative)
+      }
+      var wordCount = result.word_freq
+      var wordStat = []
+      if (wordCount) {
+        wordStat = wordCount.map(x => [x.label, x.count])
+      }
+      var ibm = result.ibm
+      var personality_stat = []
+      var quality1_stat = {}
+      var quality2_stat = {}
+      var quality3_stat = {}
+      var quality4_stat = {}
+      var quality5_stat = {}
+      var needs_stat = [],values_stat=[]
+      if (ibm) {
+        var personality = ibm.personality
+        if(personality) {
+          personality_stat = personality.map(x=>[x.name, parseFloat(x.percentile)])
+          if(personality[0]) {
+            var quality1 = personality[0].children
+            if (quality1) {
+              quality1_stat.data = quality1.map(x=>[x.name, parseFloat(x.percentile)])
+              quality1_stat.name = personality[0].name
+            }
+          }
+          if(personality[1]) {
+            var quality2 = personality[1].children
+            if (quality2) {
+              quality2_stat.data = quality2.map(x=>[x.name, parseFloat(x.percentile)])
+              quality2_stat.name = personality[1].name
+            }
+          }
+          if(personality[2]) {
+            var quality3 = personality[2].children
+            if (quality3) {
+              quality3_stat.data = quality3.map(x=>[x.name, parseFloat(x.percentile)])
+              quality3_stat.name = personality[2].name
+            }
+          }
+          if(personality[3]) {
+            var quality4 = personality[4].children
+            if (quality4) {
+              quality4_stat.data = quality4.map(x=>[x.name, parseFloat(x.percentile)])
+              quality4_stat.name = personality[3].name
+            }
+          }
+          if(personality[4]) {
+            var quality5 = personality[4].children
+            if (quality5) {
+              quality5_stat.data = quality5.map(x=>[x.name, parseFloat(x.percentile)])
+              quality5_stat.name = personality[4].name
+            }
+          }
+        }
+        var needs = ibm.needs
+        if(needs){
+          needs_stat = needs.map(x=>[x.name, parseFloat(x.percentile)])
+        }
+        var values = ibm.values
+        if(values){
+          values_stat = values.map(x=>[x.name, parseFloat(x.percentile)])
+        }
+      }
+    }
+    currentPrediction = [timeline, KNN, Logistic]
+    currentSentiment = [timeline, positive, neutral, negative]
+    if (currentPrediction != null) {
+      myPredictionChartData.push(currentPrediction);
+      drawLineChart(myPredictionChartData, 'PREDICTIONS', 'Metrics', 0, 1, 'prediction_chart')
+    }
+    if (currentSentiment) {
+      mySentimentChartData.push(currentSentiment)
+      drawLineChart(mySentimentChartData, 'SENTIMENTS', 'Metrics', 0, 1, 'sentiment_chart')
+    }
+    if (wordStat) {
+      drawBarChart(wordStats.concat(wordStat), 'Word Stats', 'word frequency', 'horizontal', 'barchart_material')
+    }
+    if(personality_stat){
+      drawBarChart(personalityChart.concat(personality_stat), 'Personality Traits',
+              'personality traits', '', 'personality')
+      //five qualities
+      var quality_chart = []
+      if(quality1_stat!=null){
+        quality_chart.push([quality1_stat.name,'PERCENTILES'])
+        drawBarChart(quality_chart.concat(quality1_stat.data), quality1_stat.name+' Traits',
+                quality1_stat.name+' Traits', '', 'quality1')
+      }
+      quality_chart = []
+      if(quality2_stat!=null){
+        quality_chart.push([quality2_stat.name,'PERCENTILES'])
+        drawBarChart(quality_chart.concat(quality2_stat.data), quality2_stat.name+' Traits',
+                quality2_stat.name+' Traits', '', 'quality2')
+      }
+      quality_chart = []
+      if(quality3_stat!=null){
+        quality_chart.push([quality2_stat.name,'PERCENTILES'])
+        drawBarChart(quality_chart.concat(quality2_stat.data), quality3_stat.name+' Traits',
+                quality3_stat.name+' Traits', '', 'quality3')
+      }
+      quality_chart = []
+      if(quality4_stat!=null){
+        quality_chart.push([quality4_stat.name,'PERCENTILES'])
+        drawBarChart(quality_chart.concat(quality4_stat.data), quality4_stat.name+' Traits',
+                quality4_stat.name+' Traits', '', 'quality4')
+      }
+      quality_chart = []
+      if(quality5_stat!=null){
+        quality_chart.push([quality5_stat.name,'PERCENTILES'])
+        drawBarChart(quality_chart.concat(quality5_stat.data), quality5_stat.name+' Traits',
+                quality5_stat.name+' Traits', '', 'quality5')
+      }
+    }
+    if(needs_stat){
+      drawBarChart(personalityChart.concat(needs_stat), 'Needs Analysis',
+              'Needs Analysis', '', 'needs')
+    }
+    if(values_stat){
+      drawBarChart(personalityChart.concat(values_stat), 'Values Analysis',
+              'Values Analysis', '', 'values')
+    }
+  }
+
+  var myPredictionChartData = [['Time', 'KNN', 'LOGISTIC']];
+  var mySentimentChartData = [['Time', 'POSITIVE', 'NEUTRAL', 'NEGATIVE']];
+  var wordStats = [['WORDS', 'FREQUENCY']];
+  var personalityChart = [['Metrics','Percentiles']]
+  var myTimeLine=0;
+  </script>
 </body>
 </html>

@@ -43,9 +43,9 @@ body, html {
 #results {
     position: absolute;
     width: 290px;
-    height: 90px;
-    bottom: 90px;
-    left: 325px;
+    height: 142px;
+    bottom: 14px;
+    left: 348px;
     font-size: 14px;
     background-color: white;
     font-weight: bold;
@@ -58,9 +58,9 @@ body, html {
 #results_other {
     position: absolute;
     width: 290px;
-    height: 90px;
-    bottom: 90px;
-    left: 640px;
+    height: 142px;
+    bottom: 14px;
+    left: 670px;
     font-size: 14px;
     background-color: white;
     font-weight: bold;
@@ -70,10 +70,70 @@ body, html {
     border-radius: 3px;
     z-index: 200;
 }
+
+
 #start_button {
     border: 0;
     background-color:transparent;
     padding: 0;
+}
+.insights {
+    position: absolute;
+    width: 240px;
+    height: 90px;
+    right: 5px;
+    font-size: 14px;
+    background-color: white;
+    font-weight: bold;
+    border: 1px solid gray;
+    padding: 10px;
+    text-align: left;
+    border-radius: 3px;
+    z-index: 200;
+}
+.insights:active {
+    position: absolute;
+    width: 50%;
+    height: 50%;
+    top: 25% !important;;
+    left: 25%;
+    font-size: 14px;
+    background-color: white;
+    font-weight: bold;
+    border: 1px solid gray;
+    padding: 10px;
+    text-align: left;
+    border-radius: 3px;
+    z-index: 300;
+}
+.insightsLeft {
+    position: absolute;
+    width: 290px;
+    height: 120px;
+    left: 5px;
+    font-size: 14px;
+    background-color: white;
+    font-weight: bold;
+    border: 1px solid gray;
+    padding: 10px;
+    text-align: left;
+    border-radius: 3px;
+    z-index: 200;
+}
+.insightsLeft:active {
+    position: absolute;
+    width: 50%;
+    height: 50%;
+    top: 25% !important;
+    left: 25%;
+    font-size: 14px;
+    background-color: white;
+    font-weight: bold;
+    border: 1px solid gray;
+    padding: 10px;
+    text-align: left;
+    border-radius: 3px;
+    z-index: 300;
 }
 .interim {
     color: gray;
