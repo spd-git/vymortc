@@ -134,6 +134,7 @@
           //suggested_words = [{"label":"ahh","score":30}]
           if(suggested_words){
             suggested_words = suggested_words.slice(0,10)
+
             words_suggestionStats = [['Word','Score']]
             words_suggestionStats = words_suggestionStats.concat(suggested_words.map(x=>[x.label,x.score]))
           }
